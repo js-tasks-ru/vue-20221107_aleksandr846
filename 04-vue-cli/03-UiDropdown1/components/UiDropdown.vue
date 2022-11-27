@@ -1,21 +1,35 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <ui-icon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{ 'dropdown_opened': isOpenDropdown }">
+    <button
+      type="button"
+      class="dropdown__toggle"
+      :class="{ 'dropdown__toggle_icon': isIcon }"
+      @click="isOpenDropdown = !isOpenDropdown"
+    >
+      <ui-icon v-if="isIcon && selIcon" :icon="selIcon" class="dropdown__icon" />
+      <span>{{ selTitle }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div v-show="isOpenDropdown" class="dropdown__menu" role="listbox">
+      <button
+        v-for="option in options"
+        class="dropdown__item"
+        :class="{ 'dropdown__item_icon': isIcon }"
+        role="option"
+        type="button"
+        @click="selectOpt(option)"
+      >
+        <ui-icon v-if="option.icon" :icon="option.icon" class="dropdown__icon" />
+        {{ option.text }}
       </button>
     </div>
   </div>
+
+  <select style="display: none;" :value="modelValue" @change="change($event)">
+    <option v-for="option in options" :value="option.value">
+      {{ option.text }}
+    </option>
+  </select>
 </template>
 
 <script>
@@ -25,6 +39,65 @@ export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
+
+  props: {
+    options: {
+      type: Array,
+      required: true
+    },
+    modelValue: {
+      type: String
+    },
+    title: {
+      type: String,
+      required: true
+    }
+  },
+
+  data() {
+    return {
+      isOpenDropdown: false
+    }
+  },
+
+  emits: ['update:modelValue'],
+
+  computed: {
+    isIcon() {
+      for(let option of this.options) {
+        if(option.icon) {
+          return true;
+        }
+      }
+      return false;
+    },
+    selTitle() {
+      for (let option of this.options) {
+        if (option.value === this.modelValue) {
+          return option.text;
+        }
+      }
+      return this.title;
+    },
+    selIcon() {
+      for (let option of this.options) {
+        if (option.value === this.modelValue) {
+          return option.icon;
+        }
+      }
+      return null;
+    },
+    },
+
+  methods: {
+    selectOpt(option) {
+      this.isOpenDropdown = false;
+      this.$emit('update:modelValue', option.value);
+    },
+    change(e) {
+      this.$emit('update:modelValue', e.target.value);
+    },
+  }
 };
 </script>
 
