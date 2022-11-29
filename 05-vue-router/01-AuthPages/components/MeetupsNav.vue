@@ -1,7 +1,9 @@
 <template>
   <nav class="nav">
-    <a href="/login" class="nav__link">Вход</a>
-    <a href="/register" class="nav__link">Регистрация</a>
+    <!-- <a href="/login" class="nav__link">Вход</a> -->
+    <!-- <a href="/register" class="nav__link">Регистрация</a> -->
+    <RouterLink :to="{ name: 'login'}" class="nav__link">Вход</RouterLink>
+    <RouterLink :to="{ name: 'register'}" class="nav__link">Регистрация</RouterLink>
   </nav>
 </template>
 
