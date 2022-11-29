@@ -1,8 +1,9 @@
 <template>
   <div class="wrapper">
-    <meetups-header />
+    <meetups-header /> 
     <main class="main">
-      <div>CURRENT PAGE</div>
+      <!-- <div>CURRENT PAGE</div> -->
+      <RouterView />
     </main>
     <meetups-footer />
   </div>
