@@ -1,8 +1,18 @@
 <template>
-  <button class="button-group__button button-group__button_active" type="button" aria-selected="false">Button</button>
+  <button
+    class="button-group__button"
+    :class="{ 'button-group__button_active': isActive }"
+    type="button"
+    :aria-selected="isActive"
+    @click="setActive"
+  >
+    <slot />
+  </button>
 </template>
 
 <script>
+import UiButtonGroup from './UiButtonGroup.vue';
+
 export default {
   name: 'UiButtonGroupItem',
 
@@ -11,6 +21,26 @@ export default {
       required: true,
     },
   },
+
+  computed: {
+    isActive() {
+      return this.$parent.currentValue === this.value;
+    }
+  },
+
+  methods: {
+    setActive() {
+      this.$parent.setValue( this.value );
+
+    }
+  },
+
+  beforeCreate() {
+    if( this.$parent.$options.name !== UiButtonGroup.name )
+    {
+      console.warn(`компонент '${this.$options.name}' можно использовать только как дочерний в компоненте '${UiButtonGroup.name}'`);
+    }
+  }
 };
 </script>
 
